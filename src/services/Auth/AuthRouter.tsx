@@ -5,13 +5,13 @@ import { useAuth } from "./"
 
 export const AuthRedirect = ({ redirect = "/", path = "/callback" }) => {
     const AuthRedirectCallback = () => {
-        const { setToken } = useAuth()
+        const { changeToken } = useAuth()
         const query = useQuery()
 
         useEffect(() => {
             const token = query.get("token")
-            if (token) setToken(token)
-        }, [setToken, query])
+            if (token) changeToken(token)
+        }, [changeToken, query])
 
         return <Redirect to={{ pathname: redirect }} />
     }

@@ -127,3 +127,41 @@ export default async () => {
         }, 200)
     })
 }
+
+export const getUsers = () => {
+    return [
+        {
+            id: 1235,
+            nome: "Lisandro Silva",
+            login: "lisandro",
+            menus: [
+                {
+                    type: "menu",
+                    label: "Mensagens",
+                    url: "/mensagens/",
+                    icon: "fas fa-envelope-open"
+                },
+                {
+                    type: "menu",
+                    label: "Acadêmico",
+                    url: "/informacoes-academicas/notas/",
+                    icon: "fas fa-file-signature",
+                    recent: true
+                }
+            ]
+        },
+        {
+            id: 5678,
+            nome: "Fábio Madeira",
+            login: "fabio",
+            menus: [
+                {
+                    type: "menu",
+                    label: "Mensagens",
+                    url: "/mensagens/",
+                    icon: "fas fa-envelope-open"
+                }
+            ]
+        }
+    ]
+}
