@@ -43,12 +43,12 @@ const reducer = (state, action: ActionType): IProfile => {
             return { ...state, userSelected: users[userSelected], users }
 
         case "CHANGE_USER":
-            if (state.users === undefined || state.users.lenght === 0)
+            if (state?.users?.length === undefined) {
                 return state
+            }
 
             const id = action.payload
             const newUserSelected = state.users.filter((user) => {
-                console.log("ids", user.id, id)
                 return user.id === id
             })
             return { ...state, userSelected: newUserSelected[0] }
@@ -59,15 +59,20 @@ const reducer = (state, action: ActionType): IProfile => {
     return state
 }
 
+const TOKEN_KEY = "@Auth-Token"
+
 export const AuthProvider = ({ children }) => {
     const [profile, dispatch] = useReducer(reducer, {} as IProfile)
-    const [token, setToken] = useState<string>("")
     const [isLogged, setIsLogged] = useState<boolean>(false)
+    const [token, setToken] = useState<string>(
+        localStorage.getItem(TOKEN_KEY) as string
+    )
 
     useEffect(() => {
         //Request user from token
         console.info(`Request user from token: ${token}`)
         if (token) {
+            localStorage.setItem(TOKEN_KEY, token)
             setTimeout(() => {
                 dispatch({
                     type: "UPDATE",
@@ -92,18 +97,6 @@ export const AuthProvider = ({ children }) => {
         })
     }
 
-    useEffect(() => {
-        console.info(`User selected: `, profile.userSelected)
-    }, [profile.userSelected])
-
-    useEffect(() => {
-        console.info(`Is Logged: `, isLogged)
-    }, [isLogged])
-
-    useEffect(() => {
-        console.info(`Profile: `, profile)
-    }, [profile])
-
     return (
         <AuthContext.Provider
             value={{
@@ -118,16 +111,18 @@ export const AuthProvider = ({ children }) => {
     )
 }
 
-export const useAuth = (): {
-    changeToken: (token: string) => void
-    changeUser: (id: number) => void
+interface IUseAuth {
     profile: IProfile
     isLogged: boolean
-} => {
-    const { changeToken, changeUser, isLogged, profile } = useContext(
+    changeToken(token: string): void
+    changeUser(id: number): void
+}
+
+export const useAuth = (): IUseAuth => {
+    const { isLogged, profile, changeToken, changeUser } = useContext(
         AuthContext
     )
-    return { changeToken, changeUser, profile, isLogged }
+    return { isLogged, profile, changeToken, changeUser }
 }
 
 export { AuthRedirect } from "./AuthRouter"
